@@ -16,6 +16,19 @@ app.use(express.json());
 // Connect DB
 await connectDB();
 
+setInterval(() => {
+  fetch(`${process.env.backend}/keep-alive`)
+    .then((res) => res.text())
+    .then(() => {
+      console.log("Ping sent to keep server alive");
+    })
+    .catch((err) => console.error("Error sending ping:", err));
+}, 14 * 60 * 1000); 
+
+app.get("/keep-alive", (req, res) => {
+  res.status(200).send("Server is alive!");
+});
+
 // Routes
 app.use("/api", userRoutes);
 app.use("/api", propertyRouter);
